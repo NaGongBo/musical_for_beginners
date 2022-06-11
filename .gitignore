@@ -1,0 +1,6 @@
+.idea/
+.env/
+.cache/
+__pycache__/
+mongo_access.py
+mfb_torch_model.pt

@@ -1,0 +1,11 @@
+Project Name: 나랑 공연 보러가지 않을래(Musical For Beginners)
+
+Team name: 어쩌다 동기
+
+
+Analyze musical reviews on interpark & yes24 tickets
+whether it has some positive sentiment or not, based on some particular aspects.
+
+We define our task as
+Multi-label text classification for
+Aspect-based sentiment analysis towards audience reviews on website
