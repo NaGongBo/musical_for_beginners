@@ -10,26 +10,17 @@ category list: { 'funny': '유쾌','touching': '감동','story': '스토리','im
 
 
 ./model/config.py : 프로젝트 관련 몇가지 상수 정의
-
 ./model/kcbert_finetune.py: KcBERT를 활용한(with huggingface) fine tuning code 정의
-
 ./model/kobert_finetune.py: KoBERT를 활용한(without huggingface) fine tuning code 정의
-
 ./model/metric_utils : category별 metric을 각각 도출하기 위한 구현부
-
 ./model/mfb_classifier.py: 완성한 모델을 활용하기 위한 클래스 정의
-
 ./model/mfb_fine_tune.py : 각 fine tuning code와 연결 정의
-
 ./model/pretrained_loader.py: pre-trained model 로드
 
 
 ./easy_dat_aug.py : train-set 증강을 위해 활용
-
 ./mfb_dataset.py: mongodb에서 데이터를 로드하여 데이터셋 형성
-
 ./model_io_translation.py : model output과 db record간의 translation 정의
-
 (ignored)./mongo_access.py : db 접속 코드(보안상 생략)
 
 
