@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.metrics import confusion_matrix
-from config import MfbConfig
+from .config import MfbConfig
 
 ####################################
 # update the confusion matrix from the prediction and label.

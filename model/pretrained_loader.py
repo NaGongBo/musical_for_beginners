@@ -64,6 +64,3 @@ def load_pretrained_config(base_model_name):
     else:
         return BertConfig.from_pretrained(_hf_model_dir[base_model_name])
 
-
-if __name__ == '__main__':
-    PretrainedLoader.load('KOBERT')

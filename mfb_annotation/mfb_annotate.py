@@ -6,7 +6,7 @@ from copy import deepcopy
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-from mongo_access import mongo_auth_access
+from ..mongo_access import mongo_auth_access
 
 import re
 

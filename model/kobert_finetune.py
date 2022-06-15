@@ -7,9 +7,9 @@ import numpy as np
 from tqdm import tqdm
 from transformers import AdamW, get_linear_schedule_with_warmup
 
-from metric_utils import LabelWiseMetrics
+from .metric_utils import LabelWiseMetrics
 
-from config import MfbConfig, LabelPool
+from .config import MfbConfig, LabelPool
 
 import pandas as pd
 import re
@@ -17,7 +17,7 @@ import emoji
 from soynlp.normalizer import repeat_normalize
 
 
-from easy_dat_aug import EDA
+from ..easy_dat_aug import EDA
 
 emojis = list({y for x in emoji.UNICODE_EMOJI.values() for y in x.keys()})
 emojis = ''.join(emojis)
@@ -37,7 +37,6 @@ def clean(x):
 _TEST_SIZE = 0.1
 
 log_interval = 10
-device = 'cpu'#'cuda' if torch.cuda.is_available() else 'cpu'
 
 class KoBERTDataset(Dataset):
     def __init__(self, dataset, sent_idx, label_idx, bert_tokenizer, max_len,
@@ -106,7 +105,7 @@ def kobert_finetune(parameters, augmentation=False, rescaling=False):
     tok = nlp.data.BERTSPTokenizer(tokenizer, vocab, lower=False)
 
     model = KoBERTMfbModel(bertmodel, num_classes=MfbConfig.OUTPUT_LABEL_NUM, dr_rate=MfbConfig.DR_RATE)
-    model.to(device)
+    model.to(MfbConfig.DEVICE)
 
     no_decay = ['bias', 'LayerNorm.weight']
     optimizer_grouped_parameters = [
@@ -141,7 +140,7 @@ def kobert_finetune(parameters, augmentation=False, rescaling=False):
             w += train_set['label'][i]
         w = max(w) / w
         w = torch.Tensor(w)
-        loss_fn = nn.MultiLabelSoftMarginLoss(weight=w.to(device))
+        loss_fn = nn.MultiLabelSoftMarginLoss(weight=w.to(MfbConfig.DEVICE))
     else:
         loss_fn = nn.MultiLabelSoftMarginLoss()
 
@@ -177,10 +176,10 @@ def kobert_finetune(parameters, augmentation=False, rescaling=False):
                 train_loss = 0.0
                 for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(tqdm(train_dataloader)):
                     optimizer.zero_grad()
-                    token_ids = token_ids.long().to(device)
-                    segment_ids = segment_ids.long().to(device)
+                    token_ids = token_ids.long().to(MfbConfig.DEVICE)
+                    segment_ids = segment_ids.long().to(MfbConfig.DEVICE)
                     valid_length = valid_length
-                    label = label.long().to(device)
+                    label = label.long().to(MfbConfig.DEVICE)
                     out = model(token_ids, valid_length, segment_ids)
                     loss = loss_fn(out, label.float())
                     loss.backward()
@@ -188,7 +187,7 @@ def kobert_finetune(parameters, augmentation=False, rescaling=False):
                     optimizer.step()
                     scheduler.step()
 
-                    if device == 'cuda':
+                    if MfbConfig.DEVICE == 'cuda':
                         out = out.cpu()
                         label = label.cpu()
                     pred = np.array(out.detach().numpy() > 0.5)
@@ -205,14 +204,14 @@ def kobert_finetune(parameters, augmentation=False, rescaling=False):
                 model.eval()
                 test_loss = 0.0
                 for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(tqdm(test_dataloader)):
-                    token_ids = token_ids.long().to(device)
-                    segment_ids = segment_ids.long().to(device)
+                    token_ids = token_ids.long().to(MfbConfig.DEVICE)
+                    segment_ids = segment_ids.long().to(MfbConfig.DEVICE)
                     valid_length = valid_length
-                    label = label.long().to(device)
+                    label = label.long().to(MfbConfig.DEVICE)
                     out = model(token_ids, valid_length, segment_ids)
                     loss_val = loss_fn(out, label.float())
 
-                    if device == 'cuda':
+                    if MfbConfig.DEVICE == 'cuda':
                         out = out.cpu()
                         label = label.cpu()
 
@@ -240,11 +239,3 @@ def kobert_finetune(parameters, augmentation=False, rescaling=False):
 
 def save_model(base, trained, tok):
     torch.save({'base': base, 'model_state_dict': trained.state_dict(), 'tok': tok}, MfbConfig.SAVE_MODEL_PATH)
-
-if __name__== '__main__':
-    #device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    device = 'cpu'
-    print('device: ', device)
-    from mfb_fine_tune import FineTuningTrainer
-    FineTuningTrainer('KOBERT', augmentation=True)
-

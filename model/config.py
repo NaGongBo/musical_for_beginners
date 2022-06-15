@@ -15,7 +15,7 @@ class MfbConfig:
     RANDOM_STATE = 42
     DR_RATE = 0.45
     EPOCHS = 20
-
+    DEVICE = 'cpu'
     OUTPUT_LABEL_NUM = 8
 
 

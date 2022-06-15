@@ -1,11 +1,9 @@
-from pretrained_loader import PretrainedLoader
+from .pretrained_loader import PretrainedLoader
 import torch
-from mfb_dataset import MfbDataset
-from config import MfbConfig
+from ..mfb_dataset import MfbDataset
+from .config import MfbConfig
 
-MODEL_OUT_NAME = './mfb_torch_model.bin'
 
-device = None
 """
 parameters to fine-tuning routine will be passed by dictionary instance
 e.g. {'model': , 'tokenizer': , 'config': , 'dataset': }
@@ -28,6 +26,5 @@ class FineTuningTrainer:
 
 
 if __name__ == '__main__':
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    device = 'cpu'
+
     FineTuningTrainer(MfbConfig.PRETRAINED)

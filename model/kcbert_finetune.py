@@ -6,13 +6,12 @@ import numpy as np
 #from sklearn import metrics
 #from tqdm import tqdm
 
-from config import MfbConfig, LabelPool
+from .config import MfbConfig, LabelPool
 
 
 import os
 
 
-device = 'cpu'
 
 
 def loss_fn(outputs, targets):
@@ -109,7 +108,7 @@ def main():
         deterministic= False,#torch.cuda.is_available(),
         gpus=-1 if torch.cuda.is_available() else None,
         precision=16 if args.fp16 else 32,
-        device='cpu',
+        device=MfbConfig.DEVICE,
         # For TPU Setup
         # tpu_cores=args.tpu_cores if args.tpu_cores else None,
     )
@@ -150,7 +149,7 @@ def kcbert_finetune(parameters):
 
 
     model = base_model# KcBERTMfbModel(base_model)
-    model.to(device)
+    model.to(MfbConfig.DEVICE)
 
     optimizer = torch.optim.AdamW(params=model.parameters(), lr=MfbConfig.LEARNING_RATE)
 
@@ -181,13 +180,3 @@ def kcbert_finetune(parameters):
 
 def save_model(base, trained):
     torch.save({'base': base, 'model_state_dict': trained.state_dict()}, './finetuned_model/kcbert_based.pt')
-
-
-if __name__== '__main__':
-    #device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    #main()
-
-    device = 'cpu'
-    print('device: ', device)
-    from mfb_fine_tune import FineTuningTrainer
-    FineTuningTrainer('KCBERT')

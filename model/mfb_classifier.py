@@ -1,11 +1,11 @@
 import torch
-from config import MfbConfig, LabelPool, MongoCollection
+from .config import MfbConfig, LabelPool, MongoCollection
 import numpy as np
-from model_io_translation import convert_label_to_record
+from ..model_io_translation import convert_label_to_record
 import pandas as pd
 from tqdm import tqdm
 
-from kobert_finetune import KoBERTDataset
+from .kobert_finetune import KoBERTDataset
 
 device = 'cpu'
 
@@ -21,7 +21,7 @@ class MusicalForBeginners:
         print("Initializing Model")
 
         if MfbConfig.PRETRAINED == 'KOBERT':
-            from kobert_finetune import KoBERTMfbModel
+            from .kobert_finetune import KoBERTMfbModel
             tmp = torch.load(MfbConfig.SAVE_MODEL_PATH)
             bert_model = tmp['base']
             tok = tmp['tok']
@@ -73,8 +73,8 @@ class MusicalForBeginners:
 
     def validate_from_dataset(self):
         self.model.eval()
-        from mfb_dataset import MfbDataset
-        from metric_utils import LabelWiseMetrics
+        from ..mfb_dataset import MfbDataset
+        from .metric_utils import LabelWiseMetrics
 
         data = MfbDataset()
         data.load()

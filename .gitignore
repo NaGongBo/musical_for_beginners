@@ -2,5 +2,7 @@
 .env/
 .cache/
 __pycache__/
+kobert/
 mongo_access.py
 mfb_torch_model.pt
+data.json

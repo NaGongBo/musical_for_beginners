@@ -1,6 +1,6 @@
-from mongo_access import mongo_auth_access
+from .mongo_access import mongo_auth_access
 import pandas as pd
-from model_io_translation import convert_record_to_label
+from .model_io_translation import convert_record_to_label
 
 _LABEL_DB_NAME = 'labeling_pool'
 _LABEL_COL_NAME = 'test_collection'
@@ -71,4 +71,3 @@ if __name__ == '__main__':
     dataset = MfbDataset()
     dataset.load(skip_meaningless=True)
     dataset.show()
-    dataset.df.to_json('./data.json')
