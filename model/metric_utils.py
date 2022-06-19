@@ -30,9 +30,9 @@ class LabelWiseMetrics:
 
 
 
-    def update(self, prediction, observation):
+    def update(self, prediction, truth):
         y_pred = prediction.T
-        y_true =  observation.T
+        y_true =  truth.T
         for i in range(MfbConfig.OUTPUT_LABEL_NUM):
             self.conf_mat_list[i] += confusion_matrix(y_true[i], y_pred[i], labels=[0,1])
 
